@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample8.1", "Sample8.1", "{68FAC130-AEAA-4B39-BFDE-2DA15F31303C}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Sample8.1.Shared", "Sample8.1\Sample8.1.Shared\Sample8.1.Shared.shproj", "{9F9FF9B8-9A63-4812-80D9-EBB060681D04}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Sample.Shared", "Sample.Shared\Sample.Shared.shproj", "{9F9FF9B8-9A63-4812-80D9-EBB060681D04}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample8.1.Windows", "Sample8.1\Sample8.1.Windows\Sample8.1.Windows.csproj", "{67EE6AC5-132B-4ADD-8642-2D1E06341C9A}"
 EndProject
@@ -17,9 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaggeredGridView", "Stagge
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Sample8.1\Sample8.1.Shared\Sample8.1.Shared.projitems*{67ee6ac5-132b-4add-8642-2d1e06341c9a}*SharedItemsImports = 4
-		Sample8.1\Sample8.1.Shared\Sample8.1.Shared.projitems*{9f9ff9b8-9a63-4812-80d9-ebb060681d04}*SharedItemsImports = 13
-		Sample8.1\Sample8.1.Shared\Sample8.1.Shared.projitems*{faca91c3-a5e5-4c92-ad64-f6b17ff85a9e}*SharedItemsImports = 4
+		Sample.Shared\Sample.Shared.projitems*{67ee6ac5-132b-4add-8642-2d1e06341c9a}*SharedItemsImports = 4
+		Sample.Shared\Sample.Shared.projitems*{9f9ff9b8-9a63-4812-80d9-ebb060681d04}*SharedItemsImports = 13
+		Sample.Shared\Sample.Shared.projitems*{c7837c03-f4cb-4bb5-b604-4ec977fc24f8}*SharedItemsImports = 4
+		Sample.Shared\Sample.Shared.projitems*{faca91c3-a5e5-4c92-ad64-f6b17ff85a9e}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,7 +122,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{9F9FF9B8-9A63-4812-80D9-EBB060681D04} = {68FAC130-AEAA-4B39-BFDE-2DA15F31303C}
 		{67EE6AC5-132B-4ADD-8642-2D1E06341C9A} = {68FAC130-AEAA-4B39-BFDE-2DA15F31303C}
 		{FACA91C3-A5E5-4C92-AD64-F6B17FF85A9E} = {68FAC130-AEAA-4B39-BFDE-2DA15F31303C}
 	EndGlobalSection

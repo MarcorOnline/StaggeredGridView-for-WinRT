@@ -1,0 +1,158 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:StaggeredGridView.Themes"
+    xmlns:controls="using:StaggeredGridView.Controls">
+
+    <Style TargetType="controls:StaggeredGridView">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:StaggeredGridView">
+                    <Grid x:Name="ContainerGrid">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="VisualStateGroup">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition GeneratedDuration="0:0:0.2" To="ReadyToRefresh" />
+                                </VisualStateGroup.Transitions>
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="RefreshDisabled">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames
+                                            Storyboard.TargetProperty="(UIElement.Visibility)"
+                                            Storyboard.TargetName="TextPull">
+                                            <DiscreteObjectKeyFrame KeyTime="0">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Visibility>Collapsed</Visibility>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="ReadyToRefresh">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames
+                                            Storyboard.TargetProperty="(UIElement.Visibility)"
+                                            Storyboard.TargetName="TextPull">
+                                            <DiscreteObjectKeyFrame KeyTime="0">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Visibility>Collapsed</Visibility>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames
+                                            Storyboard.TargetProperty="(UIElement.Visibility)"
+                                            Storyboard.TargetName="TextRefresh">
+                                            <DiscreteObjectKeyFrame KeyTime="0">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Visibility>Visible</Visibility>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <DoubleAnimation
+                                            Duration="0"
+                                            To="0.5"
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                            Storyboard.TargetName="Arrow"
+                                             />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <ScrollViewer x:Name="ScrollViewer"
+                                      RenderTransformOrigin="0.5,0.5"
+                                      ZoomMode="Disabled">
+
+                            <ScrollViewer.Resources>
+                                <Storyboard x:Name="RemoveAnimation">
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                                                     To="0.5"
+                                                     Duration="0:0:0.3">
+                                        <DoubleAnimation.EasingFunction>
+                                            <CircleEase EasingMode="EaseOut" />
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)"
+                                                     To="0.5"
+                                                     Duration="0:0:0.3">
+                                        <DoubleAnimation.EasingFunction>
+                                            <CircleEase EasingMode="EaseOut" />
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"                             
+		                                             From="1" To="0.0" 
+                                                     Duration="0:0:0.3">
+                                        <DoubleAnimation.EasingFunction>
+                                            <CircleEase EasingMode="EaseOut" />
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </ScrollViewer.Resources>
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <!--PULL TO REFRESH INDICATOR-->
+                                <Border x:Name="PullToRefreshIndicator" 
+                                        Height="{TemplateBinding RefreshHeaderHeight}">
+                                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid Width="40">
+                                            <Viewbox x:Name="Arrow"
+                                                     Height="15"
+                                                     VerticalAlignment="Top"
+                                                     Margin="0,4,0,0"
+                                                     RenderTransformOrigin="0.5,0.5">
+                                                <Viewbox.RenderTransform>
+                                                    <CompositeTransform Rotation="180" />
+                                                </Viewbox.RenderTransform>
+                                                <Path
+                                                    Width="12"
+                                                    Height="12.9999"
+                                                    Stretch="Fill"
+                                                    Fill="{TemplateBinding ArrowColor}"
+                                                    Data="M 20.4289,10.4376L 25,15.0087L 23.571,16.4376L 20.0291,12.8957L 20.0291,21.9999L 18.0083,21.9999L 18.0083,12.8583L 14.4289,16.4377L 13,15.0087L 17.5624,10.429L 19.0087,9" />
+                                            </Viewbox>
+                                        </Grid>
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Foreground="{TemplateBinding Foreground}"
+                                            FontSize="20"
+                                            x:Name="TextPull"
+                                            Text="{TemplateBinding PullText}" />
+                                        <TextBlock
+                                            Foreground="{TemplateBinding Foreground}"
+                                            FontSize="20"
+                                            x:Name="TextRefresh"
+                                            Visibility="Collapsed"
+                                            Text="{TemplateBinding RefreshText}"
+                                            Grid.Column="1" />
+                                    </Grid>
+                                </Border>
+
+                                <!--CONTENT-->
+                                <Canvas x:Name="Canvas" Grid.Row="1" Margin="{TemplateBinding Padding}">
+                                    <Canvas.ChildrenTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition />
+                                        </TransitionCollection>
+                                    </Canvas.ChildrenTransitions>
+                                </Canvas>
+                            </Grid>
+                        </ScrollViewer>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>9f9ff9b8-9a63-4812-80d9-ebb060681d04</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Sample8._1</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Model\SampleItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PaginableItemsSource.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Demo\427x640.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\491x640.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x320.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x359.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x394.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x400.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x420.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x422.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x423 (2).jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x423.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x425.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x426 (2).jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x426 (3).jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x426 (4).jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x426 (5).jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x426.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x446.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x448.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x480 (2).jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Demo\640x480.jpg" />
+  </ItemGroup>
+</Project>

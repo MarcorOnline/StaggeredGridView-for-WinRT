@@ -1,0 +1,47 @@
+﻿<Page
+    x:Class="Sample.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Sample"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    RequestedTheme="Light"
+    xmlns:controls="using:StaggeredGridView.Controls">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="StaggeredGridView Demo" FontSize="24" Margin="5" />
+
+        <controls:StaggeredGridView x:Name="HomeGridView"
+                                    Grid.Row="1"
+                                    ItemsSource="{Binding}"
+                                    ColumnsNumber="2"
+                                    ColumnsSpacing="5"
+                                    RowsSpacing="5"
+                                    Padding="5"
+                                    IsPullToRefreshEnabled="True"
+                                    PullToRefreshRequested="HomeGridView_PullToRefreshRequested">
+            <controls:StaggeredGridView.ItemTemplate>
+                <DataTemplate>
+                    <HyperlinkButton Padding="0" Click="HyperlinkButton_Click">
+                        <Grid Background="Gray">
+                            <Image Source="{Binding ImageUrl}" />
+                        </Grid>
+                    </HyperlinkButton>
+                </DataTemplate>
+            </controls:StaggeredGridView.ItemTemplate>
+
+            <controls:StaggeredGridView.Footer>
+                <ProgressRing x:Name="LoadingRing" Width="80" Height="80" 
+                              Foreground="Blue" Background="Transparent"
+                              HorizontalAlignment="Center"
+                              IsActive="{Binding Loading}" />
+            </controls:StaggeredGridView.Footer>
+        </controls:StaggeredGridView>
+    </Grid>
+</Page>
