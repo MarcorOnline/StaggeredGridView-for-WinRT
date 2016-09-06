@@ -352,6 +352,13 @@ namespace StaggeredGridView.Controls
             compressionTimer.Tick += CompressionTimer_Tick;
 
             timer.Start();
+
+            if (scroll != null)
+                ScrollItems(scroll.VerticalOffset
+#if DEBUG
+                    , "StaggeredGridView_Loaded"
+#endif
+                    );
         }
 
         private void StaggeredGridView_Unloaded(object sender, RoutedEventArgs e)

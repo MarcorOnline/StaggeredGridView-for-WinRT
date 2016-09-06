@@ -1,6 +1,8 @@
 # StaggeredGridView-for-WinRT
 A staggered grid view for Windows apps which supports multiple columns with rows of varying sizes.
 
+It supports recycle, incremental loading and pull to refresh.
+
 Supported platform:
 - Windows 8
 - Windows 8.1
@@ -19,7 +21,7 @@ Instructions:
 - If you want to support incremental loading the "ItemsSource" must implement "ISupportIncrementalLoading" (you can use the "PaginableItemsSource" in the sample)
 - If you want to support pull to refresh (only on touch devices) subscribe to "PullToRefreshRequested" event and when completed call "CompletePullToRefresh" method
 
-Properties and functionalities:
+Properties:
 - ItemsSource
 - ItemTemplate
 - Header
