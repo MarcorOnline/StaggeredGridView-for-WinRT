@@ -541,6 +541,14 @@ namespace StaggeredGridView.Controls
 
         private bool CheckIsTouchPresent()
         {
+#if DEBUG
+            if (new Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation().SystemProductName == "Virtual")
+            {
+                isTouchPresent = true;
+                return isTouchPresent;
+            }
+#endif
+
             isTouchPresent = new TouchCapabilities().TouchPresent > 0;
             return isTouchPresent;
         }
