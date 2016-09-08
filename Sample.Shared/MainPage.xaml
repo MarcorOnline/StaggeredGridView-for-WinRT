@@ -28,7 +28,8 @@
                                     PullToRefreshRequested="HomeGridView_PullToRefreshRequested">
             <controls:StaggeredGridView.ItemTemplate>
                 <DataTemplate>
-                    <HyperlinkButton Padding="0" Click="HyperlinkButton_Click">
+                    <HyperlinkButton Padding="0" Click="HyperlinkButton_Click"
+                                     HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                         <Grid Background="Gray">
                             <Image Source="{Binding ImageUrl}" />
                         </Grid>
