@@ -141,7 +141,7 @@
                                 </Border>
 
                                 <!--CONTENT-->
-                                <Canvas x:Name="Canvas" Grid.Row="1" Margin="{TemplateBinding Padding}">
+                                <Canvas x:Name="Canvas" Grid.Row="1" Margin="{TemplateBinding Padding}" VerticalAlignment="Top">
                                     <Canvas.ChildrenTransitions>
                                         <TransitionCollection>
                                             <EntranceThemeTransition />

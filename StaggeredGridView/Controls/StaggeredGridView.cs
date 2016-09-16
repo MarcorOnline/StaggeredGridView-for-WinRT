@@ -232,6 +232,7 @@ namespace StaggeredGridView.Controls
         private bool isCompressedEnough;
         private double offsetTreshhold = 70;
         private bool isTouchPresent;
+        private StretchDirection stretchDirection = StretchDirection.Both;
 
         //COLUMNS        
         private List<ColumnSummary> columns = new List<ColumnSummary>() { new ColumnSummary(), new ColumnSummary() };
@@ -577,7 +578,10 @@ namespace StaggeredGridView.Controls
 
         private double GetAvailableHeight()
         {
-            return Window.Current.Bounds.Height;        //TODO use the real available height
+            if (!double.IsNaN(Height))
+                return Height;
+            else
+                return Window.Current.Bounds.Height - 100;        //TODO use the real available height
         }
 
         private double GetVerticalMargins(FrameworkElement dataTemplate)
@@ -638,27 +642,30 @@ namespace StaggeredGridView.Controls
             {
                 var column = ChooseBelowPositionUsingHeight();
 
-                double scaledWidth;
-                double scaledHeight;
+                double computedWidth;
+                double computedHeight;
 
-                //if you don't want to stretch smaller content
-                //if (item.Width + dataTemplate.Margin.Left + dataTemplate.Margin.Right <= columnWidth)
-                //{
-                //    scaledWidth = item.Width;
-                //    scaledHeight = item.Height;
-                //}
-                //else
-                //{
-                scaledWidth = columnWidth - dataTemplate.Margin.Left - dataTemplate.Margin.Right;
-                scaledHeight = item.Height * scaledWidth / item.Width;
-                //}
+                double additionalWidth = item.AdditionalWidth;
 
-                if (scaledWidth < 0)
+                if (stretchDirection == StretchDirection.DownOnly && 
+                    item.Width + additionalWidth <= columnWidth - dataTemplate.Margin.Left - dataTemplate.Margin.Right)
+                {
+                    computedWidth = item.Width + item.AdditionalWidth;
+                    computedHeight = item.Height + item.AdditionalHeight;
+                }
+                else
+                {
+                    //scale
+                    computedWidth = columnWidth - dataTemplate.Margin.Left - dataTemplate.Margin.Right;
+                    computedHeight = (item.Height * (computedWidth - additionalWidth) / item.Width) + item.AdditionalHeight;
+                }
+
+                if (computedWidth < 0)
                     Debugger.Break();
 
                 var verticalMargins = GetVerticalMargins(dataTemplate);
 
-                var virtualization = new VirtualizationMapping(item, scaledWidth, scaledHeight);
+                var virtualization = new VirtualizationMapping(item, computedWidth, computedHeight);
                 column.assignedItems.Add(virtualization);
                 column.height += (virtualization.Height + verticalMargins);
 
@@ -721,7 +728,11 @@ namespace StaggeredGridView.Controls
             }
 
             UpdateVisibleMargins();
-            canvas.Height = maxColHeight;
+
+            if (maxColHeight < visibleHeight && isPullToRefreshEnabled)
+                canvas.Height = visibleHeight;
+            else
+                canvas.Height = maxColHeight;
         }
 
         private void FooterPresenter_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -748,8 +759,6 @@ namespace StaggeredGridView.Controls
             if (scrollVerticalOffset + 2 * visibleHeight > minVisibleBottom)
             {
                 //SCROLL DOWN
-                Debug.WriteLine("");
-
                 int stops = 0;
 
                 do
@@ -827,8 +836,6 @@ namespace StaggeredGridView.Controls
                 if (scrollToTopDistance < visibleHeight)      //la distanza tra lo scroll e il margine superiore realizzato è meno di una schermata
                 {
                     //SCROLL UP
-                    Debug.WriteLine("");
-
                     int stops = 0;
 
                     do
@@ -1083,8 +1090,25 @@ namespace StaggeredGridView.Controls
     /// </summary>
     public interface IStaggeredGridViewItem
     {
-        double Width { get; set; }
-        double Height { get; set; }
+        /// <summary>
+        /// The image width that can be scaled
+        /// </summary>
+        double Width { get; }
+
+        /// <summary>
+        /// The image height that can be scaled
+        /// </summary>
+        double Height { get; }
+
+        /// <summary>
+        /// Additional item template with (except the image) that is not scaled
+        /// </summary>
+        double AdditionalWidth { get; }
+
+        /// <summary>
+        /// Additional item template with (except the image) that is not scaled
+        /// </summary>
+        double AdditionalHeight { get; }
     }
 
     internal class VirtualizationMapping
