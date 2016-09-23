@@ -95,7 +95,9 @@
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
 
                                 <!--PULL TO REFRESH INDICATOR-->
@@ -140,14 +142,22 @@
                                     </Grid>
                                 </Border>
 
+                                <!--HEADER-->
+                                <ContentPresenter Grid.Row="1" Content="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}"
+                                                  x:Name="HeaderPresenter"/>
+
                                 <!--CONTENT-->
-                                <Canvas x:Name="Canvas" Grid.Row="1" Margin="{TemplateBinding Padding}" VerticalAlignment="Top">
+                                <Canvas x:Name="Canvas" Grid.Row="2" Margin="{TemplateBinding Padding}" VerticalAlignment="Top">
                                     <Canvas.ChildrenTransitions>
                                         <TransitionCollection>
                                             <EntranceThemeTransition />
                                         </TransitionCollection>
                                     </Canvas.ChildrenTransitions>
                                 </Canvas>
+                                
+                                <!--FOOTER-->
+                                <ContentPresenter Grid.Row="3" Content="{Binding Footer, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                  x:Name="FooterPresenter"/>
                             </Grid>
                         </ScrollViewer>
                     </Grid>

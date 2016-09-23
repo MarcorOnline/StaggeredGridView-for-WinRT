@@ -111,7 +111,7 @@ namespace StaggeredGridView.Controls
 
         #region HEADER AND FOOTER
         public static readonly DependencyProperty HeaderProperty = DependencyProperty.RegisterAttached("Header", typeof(object), typeof(StaggeredGridView), new PropertyMetadata(null, OnHeaderChanged));
-        public static readonly DependencyProperty FooterProperty = DependencyProperty.Register("Footer", typeof(object), typeof(StaggeredGridView), new PropertyMetadata(null, OnFooterChanged));
+        public static readonly DependencyProperty FooterProperty = DependencyProperty.Register("Footer", typeof(object), typeof(StaggeredGridView), new PropertyMetadata(null));
 
         public object Header
         {
@@ -128,8 +128,7 @@ namespace StaggeredGridView.Controls
         private static void OnHeaderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var list = d as StaggeredGridView;
-            list.header = e.NewValue;
-            list.Redraw();
+            list.Redraw();      //TODO ridisegnare se è cambiato di dimensione perché potrebbe aver sfalsato la view
         }
 
         private static void OnFooterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -137,12 +136,6 @@ namespace StaggeredGridView.Controls
             try
             {
                 var list = d as StaggeredGridView;
-
-                list.footer = e.NewValue;
-
-                if (list.footerPresenter != null)
-                    list.footerPresenter.SizeChanged -= list.FooterPresenter_SizeChanged;
-
                 list.Redraw();
 
                 //TODO for the footer is superfluous to the Redraw being at the bottom, optimizing the SizeChanged
@@ -253,11 +246,10 @@ namespace StaggeredGridView.Controls
         private bool loadingIncremental;
 
         //HEADER
-        private object header;
+        private ContentPresenter headerPresenter;
         private double headerHeight;
 
         //FOOTER
-        private object footer;
         private ContentPresenter footerPresenter;
         private double footerHeight;
         #endregion
@@ -291,6 +283,8 @@ namespace StaggeredGridView.Controls
             containerGrid = (Grid)GetTemplateChild("ContainerGrid");
             canvas = (Canvas)GetTemplateChild("Canvas");
             pullToRefreshIndicator = (Border)GetTemplateChild("PullToRefreshIndicator");
+            headerPresenter = (ContentPresenter)GetTemplateChild("HeaderPresenter");
+            footerPresenter = (ContentPresenter)GetTemplateChild("FooterPresenter");
 
             //translate scrollviewer
             refreshHeaderHeight = RefreshHeaderHeight;
@@ -299,6 +293,9 @@ namespace StaggeredGridView.Controls
             //subscribe events
             scroll.ViewChanging += ScrollViewer_ViewChanging;
             scroll.ViewChanged += ScrollViewer_ViewChanged;
+            
+            headerPresenter.SizeChanged += HeaderPresenter_SizeChanged;
+            footerPresenter.SizeChanged += FooterPresenter_SizeChanged;
 
             SizeChanged += StaggeredGrid_SizeChanged;
         }
@@ -493,11 +490,6 @@ namespace StaggeredGridView.Controls
 
             if (canvas != null)
                 canvas.Children.Clear();
-
-            headerHeight = 0;
-
-            footerHeight = 0;
-            footerPresenter = null;
         }
 
         private object _usedItemsSource;
@@ -541,7 +533,7 @@ namespace StaggeredGridView.Controls
             for (int i = 1; i < columns.Count; i++)
                 columns[i].leftMargin = (columnWidth + ColumnsSpacing) * i;
 
-            ArrangeHeader();
+            //ArrangeHeader();
             ArrangeItemsAndFooter(ItemsSource, dataTemplate);
 
             Debug.WriteLine("[REDRAW COMPLETED]");
@@ -623,13 +615,7 @@ namespace StaggeredGridView.Controls
             var internalWidth = GetInternalWidth();
 
             if (internalWidth <= 0)
-                return;
-
-            if (footerPresenter != null)
-            {
-                foreach (var col in columns)
-                    col.height -= footerHeight;
-            }
+                return;     
 
             visibleHeight = GetAvailableHeight();
 
@@ -698,61 +684,38 @@ namespace StaggeredGridView.Controls
 
             var maxColHeight = columns.Max(c => c.height);
 
-            //footer
-            if (Footer != null)
-            {
-                var newFooter = false;
-
-                if (footerPresenter == null)
-                {
-                    newFooter = true;
-                    footerPresenter = new ContentPresenter();
-                    footerPresenter.Width = internalWidth;
-                    footerPresenter.Content = Footer;
-                }
-
-                Canvas.SetTop(footerPresenter, maxColHeight);
-                if (newFooter)
-                    canvas.Children.Add(footerPresenter);
-                footerPresenter.Measure(new Size(internalWidth, double.PositiveInfinity));
-
-                if (newFooter)
-                    footerPresenter.SizeChanged += FooterPresenter_SizeChanged;
-
-                footerHeight = footerPresenter.DesiredSize.Height;
-
-                foreach (var col in columns)
-                    col.height += footerHeight;
-
-                maxColHeight += footerHeight;
-            }
-
             UpdateVisibleMargins();
 
-            if (maxColHeight < visibleHeight && isPullToRefreshEnabled)
+            if (maxColHeight + headerHeight + footerHeight < visibleHeight && isPullToRefreshEnabled)
                 canvas.Height = visibleHeight;
             else
                 canvas.Height = maxColHeight;
         }
+        
+        private void HeaderPresenter_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Height != headerHeight)
+            {
+                headerHeight = e.NewSize.Height;
 
+                if (columns.Count > 0 && columns[0].assignedItems.Count > 0)
+                    ScrollItems(scroll.VerticalOffset
+#if DEBUG
+                        , "FooterPresenter_SizeChanged"
+#endif
+                        );
+            }
+        }
+        
         private void FooterPresenter_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (e.NewSize.Height != footerHeight)
-            {
-                var heightDiff = e.NewSize.Height - footerHeight;
-
-                foreach (var col in columns)
-                    col.height += heightDiff;
-
-                canvas.Height += heightDiff;
-
                 footerHeight = e.NewSize.Height;
-            }
         }
 
-        private void ScrollItems(double scrollVerticalOffset,
+        private void ScrollItems(double scrollVerticalOffset
 #if DEBUG
-            string from
+           , string from
 #endif
             )
         {
@@ -949,7 +912,7 @@ namespace StaggeredGridView.Controls
             if (direction == Direction.Below)
                 Canvas.SetTop(item, column.visibleBottom);
             else
-                Canvas.SetTop(item, column.visibleTop + headerHeight);
+                Canvas.SetTop(item, column.visibleTop);
         }
 
         /// <summary>
@@ -1024,34 +987,7 @@ namespace StaggeredGridView.Controls
 
             PullToRefreshRequested?.Invoke(this, EventArgs.Empty);
         }
-
-        public static DependencyObject FindChildControl<T>(DependencyObject control, string ctrlName)
-        {
-            int childNumber = VisualTreeHelper.GetChildrenCount(control);
-            for (int i = 0; i < childNumber; i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(control, i);
-                FrameworkElement fe = child as FrameworkElement;
-                // Not a framework element or is null
-                if (fe == null) return null;
-                if (string.IsNullOrEmpty(ctrlName) && child is T)
-                    return child;
-                else if (child is T && fe.Name == ctrlName)
-                {
-                    // Found the control so return
-                    return child;
-                }
-                else
-                {
-                    // Not found it - search children
-                    DependencyObject nextLevel = FindChildControl<T>(child, ctrlName);
-                    if (nextLevel != null)
-                        return nextLevel;
-                }
-            }
-            return null;
-        }
-
+        
         public void CompletePullToRefresh()
         {
             timer?.Stop();
