@@ -346,7 +346,7 @@ namespace StaggeredGridView.Controls
             timer.Tick += Timer_Tick;
 
             compressionTimer = new DispatcherTimer();
-            compressionTimer.Interval = TimeSpan.FromMilliseconds(300);
+            compressionTimer.Interval = TimeSpan.FromMilliseconds(100);
             compressionTimer.Tick += CompressionTimer_Tick;
 
             timer.Start();
@@ -464,12 +464,19 @@ namespace StaggeredGridView.Controls
             {
                 _usedItemsSource = null;
                 var oldScroll = scroll.VerticalOffset;
+
                 Redraw();
-                ScrollItems(scroll.VerticalOffset
+
+                if (columns.Count > 0 && columns[0].assignedItems.Count > 0)
+                {
+                    ScrollItems(scroll.VerticalOffset
 #if DEBUG
                             , "CollectionChanged (Other)"
 #endif
                             );
+                }
+                else
+                    scroll?.ChangeView(null, 0, null, true);
             }
         }
 
@@ -998,6 +1005,8 @@ namespace StaggeredGridView.Controls
             isReadyToRefresh = false;
 
             VisualStateManager.GoToState(this, VisualStateNormal, true);
+
+            timer?.Start();
         }
 
         public void ScrollIntoView(IStaggeredGridViewItem item)
