@@ -508,7 +508,7 @@ namespace StaggeredGridView.Controls
         {
             Debug.WriteLine("[REDRAW REQUESTED]");
 
-            if (ItemsSource != _usedItemsSource || ItemTemplate != _usedItemTemplate || _usedWidth != ActualWidth || _usedHeight != ActualHeight)
+            if (ItemsSource != _usedItemsSource || ItemTemplate != _usedItemTemplate || _usedWidth != ActualWidth || _usedHeight != ActualHeight || (canvas != null && canvas.Children.Count == 0))
                 ClearAll();
             else
                 return;
@@ -890,7 +890,7 @@ namespace StaggeredGridView.Controls
                 incrementalCollection.HasMoreItems)
             {
                 loadingIncremental = true;
-                await incrementalCollection.LoadMoreItemsAsync(20);     //TODO choose your pagination increment for ISupportIncrementalLoading
+                await incrementalCollection.LoadMoreItemsAsync(30);     //TODO choose your pagination increment for ISupportIncrementalLoading
                 loadingIncremental = false;
             }
         }
